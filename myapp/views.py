@@ -5,7 +5,7 @@ from django.http import HttpResponse
 
 
 def main(request):
-    return HttpResponse('HI!!! From main page:))))')
+    return render(request, 'blogs.html')
 
 
 def about(request):
@@ -13,7 +13,7 @@ def about(request):
 
 
 def blog_post(request, slug):
-    return HttpResponse(f'Post №{slug}')
+    return render(request, 'blog_item.html')
 
 
 def blog_post_add_comment(request, slug):
@@ -44,8 +44,8 @@ def change_password(request, username):
 
 
 def register_user(request):
-    return HttpResponse('REGISTRATIOOOON')
+    return render(request, 'registretion.html')
 
 
 def login_user(request):
-    return HttpResponse('LOGIIIIN')
+    return render(request, 'login.html')
