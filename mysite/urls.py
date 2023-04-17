@@ -22,18 +22,18 @@ from myapp.views import main, about, blog_post, blog_post_add_comment, \
                         login_user
 
 urlpatterns = [
-    path('blogs/', main),
+    path('blogs/', main, name='blogs'),
     path('about/', about),
-    path('', main),
-    path('blogs/<slug:slug>/', blog_post),
+    path('', main, name='blogs'),
+    path('blogs/<slug:slug>/', blog_post, name='blog_post'),
     path('blogs/<slug:slug>/comment', blog_post_add_comment),
     path('create/', create_new_post),
     path('blogs/<slug:slug>/update', update_post),
     path('blogs/<slug:slug>/delete', delete_post),
     path('profile/<str:username>/', show_user_profile),
     path('profile/<str:username>/change_password', change_password),
-    path('register', register_user),
-    path('login/', login_user),
+    path('register', register_user, name='register'),
+    path('login/', login_user, name='login'),
     path('logout/', main)
 
 ]

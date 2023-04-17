@@ -1,0 +1,18 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<main style="margin: auto;
+  width: 50%;">
+    <div style="margin: auto; width: 50%; padding: 10px;">
+        <div class="card mb-3">
+            <img src="https://i.discogs.com/NHAk7rYgJrK1QueMfGzzw9pdGoyFx6fZUUW7xBYqlB4/rs:fit/g:sm/q:90/h:315/w:306/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTc5Mzg3/NC0xMTc2OTA3MTAy/LmpwZWc.jpeg"
+                 class="card-img-top" alt="Post">
+            <div class="card-body">
+                <h5 class="card-title">Post</h5>
+                <p class="card-text">{% lorem 50 w random %}</p>
+                <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
