@@ -22,6 +22,7 @@ from myapp.views import main, about, blog_post, blog_post_add_comment, \
                         login_user
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path('blogs/', main, name='blogs'),
     path('about/', about),
     path('', main, name='blogs'),
