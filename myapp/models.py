@@ -59,8 +59,12 @@ Comment.objects.create(content="COMMENT 5 TO POST 4", contains=post4, author=use
 
 POST 5 WITHOUT COMMENTS
 """
+import datetime
+
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.text import slugify
+from datetime import date
 
 
 class Topic(models.Model):
@@ -73,13 +77,18 @@ class Topic(models.Model):
 
 
 class Post(models.Model):
-    slug = models.SlugField(max_length=40)
+    slug = models.SlugField(max_length=150, unique=True)
     title = models.CharField(max_length=150)
     text = models.TextField(null=True, blank=True)
     created_at = models.DateField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     contains = models.ManyToManyField(Topic)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title) + '-' + str(datetime.datetime.now().strftime("%Y-%m-%d-%H-%M"))
+        return super(Post, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title

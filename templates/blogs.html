@@ -13,7 +13,7 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ item.title }}</h5>
                         <p class="card-text">{{ item.text }}</p>
-                        <a href="blogs/{{item.slug}}" class="btn btn-primary">Read</a>
+                        <a href={% url "blog_post" item.slug %} class="btn btn-primary">Read</a>
                     </div>
                 </div>
             </div>
