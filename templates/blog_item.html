@@ -2,17 +2,37 @@
 
 {% block content %}
 <main style="margin: auto;
-  width: 50%;">
-    <div style="margin: auto; width: 50%; padding: 10px;">
+  width: 100%;">
+    <div style="margin: auto; width: 75%; padding: 10px;">
         <div class="card mb-3">
-            <img src="https://i.discogs.com/NHAk7rYgJrK1QueMfGzzw9pdGoyFx6fZUUW7xBYqlB4/rs:fit/g:sm/q:90/h:315/w:306/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTc5Mzg3/NC0xMTc2OTA3MTAy/LmpwZWc.jpeg"
+            <img style="width:500px; height: 300px"
+                 src="https://i.discogs.com/NHAk7rYgJrK1QueMfGzzw9pdGoyFx6fZUUW7xBYqlB4/rs:fit/g:sm/q:90/h:315/w:306/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTc5Mzg3/NC0xMTc2OTA3MTAy/LmpwZWc.jpeg"
                  class="card-img-top" alt="Post">
             <div class="card-body">
-                <h5 class="card-title">Post</h5>
-                <p class="card-text">{% lorem 50 w random %}</p>
-                <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                <h5 class="card-title">{{ data.title }}</h5>
+                <p class="card-text">{{ data.text }}</p>
+                <footer class="blockquote-footer"><cite title="Source Title">{{ data.author.username }}</cite>
+                    <p class="card-text"><small class="text-body-secondary">Create at: {{ data.created_at }}</small></p>
+                </footer>
             </div>
         </div>
+        {% if com_len != 0%}
+        {% for item in comments %}
+        <div class="card" style="margin-top: 10px">
+            <div class="card-header">
+                Comment - {{ forloop.counter }}
+            </div>
+            <div class="card-body">
+                <blockquote class="blockquote mb-0">
+                    <p>{{ item.content }}</p>
+                    <footer class="blockquote-footer"><cite title="Source Title">{{ item.author.username }}</cite>
+                        <p class="card-text"><small class="text-body-secondary">Create at: {{ data.created_at }}</small></p>
+                    </footer>
+                </blockquote>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
     </div>
 </main>
 {% endblock %}

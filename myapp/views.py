@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-
+from .models import Post, Topic, Comment
 # Create your views here.
 
 
 def main(request):
-    return render(request, 'blogs.html')
+    posts = Post.objects.all()
+    return render(request, 'blogs.html', {"data": posts})
 
 
 def about(request):
@@ -13,7 +14,12 @@ def about(request):
 
 
 def blog_post(request, slug):
-    return render(request, 'blog_item.html')
+    post = Post.objects.get(slug=slug)
+    comments = post.comment_set.all()
+    com_len = len(comments)
+    return render(request, 'blog_item.html', {"data": post,
+                                              "comments": comments,
+                                              "com_lis_len": com_len})
 
 
 def blog_post_add_comment(request, slug):
