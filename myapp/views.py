@@ -6,7 +6,9 @@ from .models import Post, Topic, Comment
 
 def main(request):
     posts = Post.objects.all()
-    return render(request, 'blogs.html', {"data": posts})
+    topics = Topic.objects.all()
+    return render(request, 'blogs.html', {'data': posts,
+                                          'topics': topics})
 
 
 def about(request):
@@ -16,10 +18,8 @@ def about(request):
 def blog_post(request, slug):
     post = Post.objects.get(slug=slug)
     comments = post.comment_set.all()
-    com_len = len(comments)
     return render(request, 'blog_item.html', {"data": post,
-                                              "comments": comments,
-                                              "com_lis_len": com_len})
+                                              "comments": comments})
 
 
 def blog_post_add_comment(request, slug):
@@ -27,7 +27,7 @@ def blog_post_add_comment(request, slug):
 
 
 def create_new_post(request):
-    return HttpResponse('Thi is form for create new post')
+    return render(request, 'created_post.html')
 
 
 def update_post(request, slug):

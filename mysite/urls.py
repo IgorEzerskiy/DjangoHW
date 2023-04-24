@@ -27,7 +27,7 @@ urlpatterns = [
     path('about/', about),
     path('', main, name='blogs'),
     path('blogs/<slug:slug>/', blog_post, name='blog_post'),
-    path('create/', create_new_post),
+    path('create/', create_new_post, name='create_post'),
     path('blogs/<slug:slug>/update', update_post),
     path('blogs/<slug:slug>/delete', delete_post),
     path('profile/<str:username>/', show_user_profile),
