@@ -1,12 +1,29 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+
+from .forms import AuthenticationForm
 from .models import Post, Topic, Comment
-# Create your views here.
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from django import forms
 
 
+@login_required(login_url='/login/')
 def main(request):
+    if request.GET.get('search_req'):
+        posts = Post.objects.filter(title__icontains=request.GET.get('search_req'))
+        topics = Topic.objects.all()
+        return render(request, 'blogs.html', {'data': posts,
+                                              'topics': topics})
+    elif request.GET.get('topic'):
+        posts = Post.objects.filter(contains__title__icontains=request.GET.get('topic'))
+        topics = Topic.objects.all()
+        return render(request, 'blogs.html', {'data': posts,
+                                              'topics': topics})
     posts = Post.objects.all()
     topics = Topic.objects.all()
+
     return render(request, 'blogs.html', {'data': posts,
                                           'topics': topics})
 
@@ -15,19 +32,35 @@ def about(request):
     return HttpResponse('This is ABAAAAAAAAAAAAAAAAAUTTT')
 
 
+@login_required(login_url='/login/')
 def blog_post(request, slug):
+    if request.GET.get('comment_text'):
+        Comment.objects.create(content=request.GET.get('comment_text'),
+                               contains=Post.objects.get(slug=slug),
+                               author=User.objects.get(username=request.user))
+
     post = Post.objects.get(slug=slug)
     comments = post.comment_set.all()
-    return render(request, 'blog_item.html', {"data": post,
-                                              "comments": comments})
+    return render(request, 'blog_item.html', {"data": post, "comments": comments})
 
 
 def blog_post_add_comment(request, slug):
     return HttpResponse(f'This is page for adding comment to post №{slug}')
 
 
+@login_required(login_url='/login/')
 def create_new_post(request):
-    return render(request, 'created_post.html')
+    if request.method == 'POST':
+        new_post = Post(title=request.POST.get('title'),
+                        text=request.POST.get('post_body'),
+                        author=User.objects.get(username=request.user))
+        topics_lst = request.POST.getlist('topics')
+        new_post.save()
+        for topic in topics_lst:
+            new_post.contains.add(Topic.objects.get(title=topic))
+
+    topics = Topic.objects.all()
+    return render(request, 'created_post.html', {'topics': topics})
 
 
 def update_post(request, slug):
@@ -50,8 +83,28 @@ def change_password(request, username):
 
 
 def register_user(request):
+    if request.method == 'POST':
+        user = User.objects.create_user(username=request.POST.get('name'),
+                                        password=request.POST.get('password'),
+                                        first_name=request.POST.get('first_name'),
+                                        last_name=request.POST.get('second_name'))
+        user.save()
     return render(request, 'registretion.html')
 
 
 def login_user(request):
-    return render(request, 'login.html')
+    if request.method == 'POST':
+        form = AuthenticationForm(request.POST)
+        if form.is_valid():
+            login(request, form.user)
+            return HttpResponseRedirect('/')
+    else:
+        form = AuthenticationForm()
+
+    return render(request, 'login.html', {'form': form})
+
+
+@login_required(login_url='/login/')
+def logout_user(request):
+    logout(request)
+    return HttpResponseRedirect('/')
