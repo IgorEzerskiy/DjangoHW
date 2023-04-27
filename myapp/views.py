@@ -13,9 +13,9 @@ from django.contrib.auth import login, logout
 def main(request):
     search_params = Q()
     if request.GET.get('search_req'):
-        search_params |= Q(title__icontains=request.GET.get('search_req'))
+        search_params &= Q(title__icontains=request.GET.get('search_req'))
     if request.GET.get('topic'):
-        search_params |= Q(contains__title__icontains=request.GET.get('topic'))
+        search_params &= Q(contains__title__icontains=request.GET.get('topic'))
     posts = Post.objects.filter(search_params)
     topics = Topic.objects.all()
     return render(request, 'blogs.html', {'data': posts,
