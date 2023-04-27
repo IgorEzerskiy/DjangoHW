@@ -1,29 +1,23 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 
 from .forms import AuthenticationForm
 from .models import Post, Topic, Comment
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
-from django import forms
+from django.contrib.auth import login, logout
 
 
 @login_required(login_url='/login/')
 def main(request):
+    search_params = Q()
     if request.GET.get('search_req'):
-        posts = Post.objects.filter(title__icontains=request.GET.get('search_req'))
-        topics = Topic.objects.all()
-        return render(request, 'blogs.html', {'data': posts,
-                                              'topics': topics})
-    elif request.GET.get('topic'):
-        posts = Post.objects.filter(contains__title__icontains=request.GET.get('topic'))
-        topics = Topic.objects.all()
-        return render(request, 'blogs.html', {'data': posts,
-                                              'topics': topics})
-    posts = Post.objects.all()
+        search_params &= Q(title__icontains=request.GET.get('search_req'))
+    if request.GET.get('topic'):
+        search_params &= Q(contains__title__icontains=request.GET.get('topic'))
+    posts = Post.objects.filter(search_params)
     topics = Topic.objects.all()
-
     return render(request, 'blogs.html', {'data': posts,
                                           'topics': topics})
 
