@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
+from django.db.models import Q
 
 from .forms import AuthenticationForm
 from .models import Post, Topic, Comment
@@ -11,19 +12,14 @@ from django import forms
 
 @login_required(login_url='/login/')
 def main(request):
+    search_params = Q()
     if request.GET.get('search_req'):
-        posts = Post.objects.filter(title__icontains=request.GET.get('search_req'))
-        topics = Topic.objects.all()
-        return render(request, 'blogs.html', {'data': posts,
-                                              'topics': topics})
-    elif request.GET.get('topic'):
-        posts = Post.objects.filter(contains__title__icontains=request.GET.get('topic'))
-        topics = Topic.objects.all()
-        return render(request, 'blogs.html', {'data': posts,
-                                              'topics': topics})
-    posts = Post.objects.all()
-    topics = Topic.objects.all()
+        search_params &= Q(title__icontains=request.GET.get('search_req'))
+    if request.GET.get('topic'):
+        search_params &= Q(contains__title__icontains=request.GET.get('topic'))
 
+    posts = Post.objects.filter(search_params)
+    topics = Topic.objects.all()
     return render(request, 'blogs.html', {'data': posts,
                                           'topics': topics})
 
@@ -34,14 +30,14 @@ def about(request):
 
 @login_required(login_url='/login/')
 def blog_post(request, slug):
-    if request.GET.get('comment_text'):
-        Comment.objects.create(content=request.GET.get('comment_text'),
+    if request.method == 'POST':
+        Comment.objects.create(content=request.POST.get('comment_text'),
                                contains=Post.objects.get(slug=slug),
                                author=User.objects.get(username=request.user))
 
     post = Post.objects.get(slug=slug)
-    comments = post.comment_set.all()
-    return render(request, 'blog_item.html', {"data": post, "comments": comments})
+    # comments = post.comment_set.all()
+    return render(request, 'blog_item.html', {"data": post})
 
 
 def blog_post_add_comment(request, slug):
@@ -83,13 +79,18 @@ def change_password(request, username):
 
 
 def register_user(request):
+    user_already_exist = False
     if request.method == 'POST':
-        user = User.objects.create_user(username=request.POST.get('name'),
-                                        password=request.POST.get('password'),
-                                        first_name=request.POST.get('first_name'),
-                                        last_name=request.POST.get('second_name'))
-        user.save()
-    return render(request, 'registretion.html')
+        users = User.objects.get(username=request.POST.get('name'))
+        if users is None:
+            user = User.objects.create_user(username=request.POST.get('name'),
+                                            password=request.POST.get('password'),
+                                            first_name=request.POST.get('first_name'),
+                                            last_name=request.POST.get('second_name'))
+            user.save()
+        else:
+            user_already_exist = True
+    return render(request, 'registretion.html', {'warning': user_already_exist})
 
 
 def login_user(request):
