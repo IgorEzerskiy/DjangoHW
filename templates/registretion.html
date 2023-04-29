@@ -2,36 +2,35 @@
 
 {% block content %}
 
+    {% if warning%}
+        <script>alert("Invalid name. User is already exist!!! Try agan.");</script>
+    {% endif %}
 <main style="margin: auto;
   width: 50%;">
     <div style="margin: auto; width: 50%; padding: 10px;">
-        <form class="row g-3">
+        <form method="POST" action="{% url 'register' %}" class="row g-3">
+            {% csrf_token %}
             <div class="col-md-6">
-                <label for="inputEmail4" class="form-label">Email</label>
-                <input type="email" class="form-control" id="inputEmail4">
+                <label for="inputEmail4" class="form-label">Nickname</label>
+                <input required name="name" type="text" class="form-control" id="inputEmail4">
             </div>
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Password</label>
-                <input type="password" class="form-control" id="inputPassword4">
+                <input required name="password" type="password" class="form-control" id="inputPassword4">
             </div>
             <div class="col-12">
                 <label for="inputFirstName" class="form-label">First name</label>
-                <input type="text" class="form-control" id="inputFirstName" placeholder="Your first name">
+                <input required name="first_name" type="text" class="form-control" id="inputFirstName"
+                       placeholder="Your first name">
             </div>
             <div class="col-12">
                 <label for="inputSecondName" class="form-label">Second name</label>
-                <input type="text" class="form-control" id="inputSecondName" placeholder="Your second name">
-            </div>
-            <div class="col-12">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="gridCheck">
-                    <label class="form-check-label" for="gridCheck">
-                        Check me out
-                    </label>
-                </div>
+                <input required name="second_name" type="text" class="form-control" id="inputSecondName"
+                       placeholder="Your second name">
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Sign in</button>
+                <p style="margin-top: 10px"><a href={% url "login" %} class="link-primary">Login</a></p>
             </div>
         </form>
     </div>

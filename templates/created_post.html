@@ -1,0 +1,25 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<main style="margin: auto;
+  width: 1000px">
+    <form method="POST" action="{% url 'create_post' %}">
+        {% csrf_token %}
+        <label for="title" class="form-label">Title:</label>
+        <input type="text" name="title" class="form-control" id="title" placeholder="Title..."
+               style="margin-bottom: 10px">
+        <label for="new_post_text" class="form-label">Post text: </label>
+        <textarea class="form-control" id="new_post_text" rows="3"
+                  placeholder="Write your post..." style="margin-bottom: 10px" name="post_body"></textarea>
+        <label for="select_topic" class="form-label">Select topics: </label>
+        <select class="form-select" multiple aria-label="multiple select example" style="margin-bottom: 10px"
+                name="topics" required id="select_topic">
+            {% for item in topics %}
+            <option value="{{ item.title }}">{{ item.title }}</option>
+            {% endfor %}
+        </select>
+        <div id="Select helper" class="form-text" style="margin-bottom: 10px">Select one or more topics.</div>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+</main>
+{% endblock %}

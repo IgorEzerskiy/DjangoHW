@@ -19,7 +19,8 @@ from django.urls import path
 from myapp.views import main, about, blog_post, blog_post_add_comment, \
                         create_new_post, update_post, delete_post, \
                         show_user_profile, change_password, register_user, \
-                        login_user
+                        login_user, logout_user
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,13 +28,13 @@ urlpatterns = [
     path('about/', about),
     path('', main, name='blogs'),
     path('blogs/<slug:slug>/', blog_post, name='blog_post'),
-    path('create/', create_new_post),
+    path('create/', create_new_post, name='create_post'),
     path('blogs/<slug:slug>/update', update_post),
     path('blogs/<slug:slug>/delete', delete_post),
     path('profile/<str:username>/', show_user_profile),
     path('profile/<str:username>/change_password', change_password),
     path('register', register_user, name='register'),
     path('login/', login_user, name='login'),
-    path('logout/', main)
+    path('logout/', logout_user, name='logout')
 
 ]
